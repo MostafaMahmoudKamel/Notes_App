@@ -1,3 +1,4 @@
+import android.util.Patterns
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,8 +22,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -31,6 +34,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.firebase_learn.presentition.login.LoginUiEffect
 import com.example.firebase_learn.presentition.login.LoginViewIntent
 import com.example.firebase_learn.presentition.login.LoginViewModel
+import com.example.firebase_learn.utils.isEmailValid
+import com.example.firebase_learn.utils.isPasswordValid
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -46,8 +51,7 @@ fun LoginScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
 
-    var context = LocalContext.current
-
+    val requestFocus = remember { FocusRequester() }
     LaunchedEffect(viewModel) {
         viewModel.effectFlow.collectLatest { effect ->
             when (effect) {
@@ -92,24 +96,37 @@ fun LoginScreen(
                     value = uiState.value.email,
                     onValueChange = {
                         viewModel.handeIntent(LoginViewIntent.UpdateEmail(it))
+                        //check email Validation
+                        viewModel.handeIntent(LoginViewIntent.UpdateEmailError(!Patterns.EMAIL_ADDRESS.matcher(it).matches()))
                     },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp),
+                        .padding(16.dp)
+                        .focusRequester(focusRequester = requestFocus)
+                        //apply email error if i focus and doesn't enter any data
+                        .onFocusChanged { if(it.isFocused){viewModel.handeIntent(LoginViewIntent.UpdateEmailError(true))} },
                     label = { Text("Email") },
-                    enabled = !uiState.value.isLoading // Disable when loading
+                    enabled = !uiState.value.isLoading, // Disable when loading
+                    isError = uiState.value.emailError,
+                    singleLine = true
 
                 )
                 OutlinedTextField(
                     value = uiState.value.password,
                     onValueChange = {
                         viewModel.handeIntent(LoginViewIntent.UpdatePassword(it))
+                        //check password Validation
+                        viewModel.handeIntent(LoginViewIntent.UpdatePasswordError(!it.isPasswordValid()))
                     },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp),
+                        .padding(16.dp)
+                        .focusRequester(focusRequester =requestFocus )
+                        //apply error if i focus on password and doesn't enter any data
+                        .onFocusChanged { if(it.isFocused){viewModel.handeIntent(LoginViewIntent.UpdatePasswordError(true))} },
                     label = { Text("Password") },
-
+                    isError = uiState.value.passwordError,
+                    singleLine = true,
                     enabled = !uiState.value.isLoading // Disable when loading
 
                 )
@@ -119,12 +136,24 @@ fun LoginScreen(
                         .fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(containerColor = Color.Blue),
                     onClick = {
-                        viewModel.handeIntent(
-                            LoginViewIntent.Login(
-                                uiState.value.email,
-                                uiState.value.password
+                        //check if All Filed is valid and doesn't have any error
+                        if(!uiState.value.passwordError&&!uiState.value.emailError&&uiState.value.email!=""&&uiState.value.password!="") {
+                            viewModel.handeIntent(
+                                LoginViewIntent.Login(
+                                    uiState.value.email,
+                                    uiState.value.password
+                                )
                             )
-                        )
+                        }else{
+                            //apply error = true if any filed have an error
+                            if(uiState.value.emailError||!(uiState.value.email).isEmailValid()){
+                                viewModel.handeIntent(LoginViewIntent.UpdateEmailError(true))
+                            }
+                            if(uiState.value.passwordError||!(uiState.value.password).isPasswordValid()){
+                                viewModel.handeIntent(LoginViewIntent.UpdatePasswordError(true))
+
+                            }
+                        }
                     },
                     enabled = !uiState.value.isLoading // Disable when loading
 
@@ -141,7 +170,7 @@ fun LoginScreen(
                     }
                 )
 
-                Text(color = Color.Red, text = uiState.value.errorMessage)
+//                Text(color = Color.Red, text = uiState.value.errorMessage)
 
 
             }//column

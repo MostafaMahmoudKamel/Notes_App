@@ -1,4 +1,4 @@
-package com.example.firebase_learn.data.di
+package com.example.firebase_learn.di
 
 import com.example.firebase_learn.data.repository.NoteRepositoryImpl
 import com.example.firebase_learn.domain.repository.UserRepository

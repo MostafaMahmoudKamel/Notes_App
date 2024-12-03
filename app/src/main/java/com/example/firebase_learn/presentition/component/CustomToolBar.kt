@@ -5,8 +5,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -20,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun CustomToolBar(text:String,imageVector: ImageVector,onIconClicked: () -> Unit) {
+fun CustomToolBar(text:String,imageVectorStart:ImageVector?=null,imageVectorEnd: ImageVector?=null,onIconClicked: () -> Unit,onBackClicked:(()->Unit)?=null   ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -28,6 +26,14 @@ fun CustomToolBar(text:String,imageVector: ImageVector,onIconClicked: () -> Unit
             .background(Color.Blue),
         verticalAlignment = Alignment.CenterVertically
     ) {
+        imageVectorStart?.let {
+                IconButton(onClick = onBackClicked ?:{}) {
+                    Icon(imageVector = imageVectorStart, contentDescription = "Back")
+                }
+
+        }
+
+
         Text(
             text = text,
             fontWeight = FontWeight.Bold,
@@ -36,8 +42,11 @@ fun CustomToolBar(text:String,imageVector: ImageVector,onIconClicked: () -> Unit
                 .padding(16.dp)
                 .weight(1f)
         )
-        IconButton(onClick = onIconClicked) {
-            Icon(imageVector=imageVector, contentDescription = "Delete")
+        imageVectorEnd?.let {
+            IconButton(onClick = onIconClicked) {
+                Icon(imageVector=imageVectorEnd, contentDescription = "Delete")
+            }
         }
+
     }
 }

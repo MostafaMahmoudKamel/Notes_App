@@ -7,21 +7,23 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.firebase_learn.data.model.Note
 import com.example.firebase_learn.presentition.component.CustomToolBar
 
@@ -33,7 +35,7 @@ fun UpdateScreen(
 ) {
 
 
-    val uiState = viewModel.uiState.collectAsState()
+    val uiState = viewModel.uiState.collectAsStateWithLifecycle()
 
     //call when updateScreen is opened
     LaunchedEffect(viewModel) {
@@ -51,13 +53,15 @@ fun UpdateScreen(
         topBar = {
             CustomToolBar(
                 text = "UpdateScreen",
-                imageVector = Icons.Default.Delete,
+                imageVectorStart = Icons.AutoMirrored.Filled.ArrowBack,
+                imageVectorEnd = Icons.Default.Delete,
                 onIconClicked = {
                     viewModel.handleIntent(UpdateViewIntent.DeleteNote(noteId))
-                }
+                },
+                onBackClicked = {onNavigateToHome()}
             )
         }
-    ) {paddingTopBar->
+    ) { paddingTopBar ->
 
         Box(modifier = Modifier.fillMaxSize()) {
             Column(
@@ -66,7 +70,6 @@ fun UpdateScreen(
                     .fillMaxSize()
                     .systemBarsPadding(),
             ) {
-
 
 
                 OutlinedTextField(
@@ -95,8 +98,9 @@ fun UpdateScreen(
 
                 Button(
                     modifier = Modifier
+                        .padding(16.dp)
                         .fillMaxWidth()
-                        .padding(16.dp),
+                        ,
                     colors = ButtonDefaults.buttonColors(containerColor = Color.Blue),
 
 
@@ -113,14 +117,26 @@ fun UpdateScreen(
                         )
                     }
                 ) {
-                    Text("UpdateNOte")
+                    Box(modifier = Modifier) {
+                        if (uiState.value.isLoading) {
+                            CircularProgressIndicator(
+                                modifier = Modifier
+                                    .align(Alignment.Center),
+
+                                color = MaterialTheme.colorScheme.secondary
+
+                            )
+                        } else {
+                            Text("UpdateNOte", modifier = Modifier.align(Alignment.Center))
+                        }
+                    }
                 }
 
 
             }
-            if (uiState.value.isLoading) {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-            }
+//            if (uiState.value.isLoading) {
+//                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+//            }
         }
     }
 }

@@ -3,7 +3,7 @@ package com.example.firebase_learn.presentition.update
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.firebase_learn.data.model.Note
-import com.example.firebase_learn.data.model.UiResource
+import com.example.firebase_learn.utils.UiResource
 import com.example.firebase_learn.domain.usecase.noteUseCase.DeleteNoteUseCase
 import com.example.firebase_learn.domain.usecase.noteUseCase.GetNoteByIdUseCase
 import com.example.firebase_learn.domain.usecase.noteUseCase.UpdateNoteUseCase
@@ -68,7 +68,8 @@ class UpdateViewModel @Inject constructor(
                             title = uiResourse.data.title,
                             data = uiResourse.data.data,
                             userId = uiResourse.data.userId,
-                            noteId = uiResourse.data.noteId
+                            noteId = uiResourse.data.noteId,
+                            isLoading = false
                         )
                     }
 

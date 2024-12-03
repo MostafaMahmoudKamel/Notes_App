@@ -1,7 +1,8 @@
-package com.example.firebase_learn.data.di
+package com.example.firebase_learn.di
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.example.firebase_learn.utils.Constants
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,7 +17,7 @@ object PreferenceModule {
     @Singleton
     @Provides //this module will replace SharedPreferences with the returned value
     fun provideSharedPreferences(@ApplicationContext context: Context): SharedPreferences {
-        return context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+        return context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE)
     }
 
 }

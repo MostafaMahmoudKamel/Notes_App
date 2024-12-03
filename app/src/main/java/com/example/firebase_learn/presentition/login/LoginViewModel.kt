@@ -1,17 +1,10 @@
 package com.example.firebase_learn.presentition.login
 
 
-import android.content.Context
-import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.firebase_learn.data.model.UiResource
-import com.example.firebase_learn.data.sharedPref.SharedPrefApp
-import com.example.firebase_learn.domain.repository.UserRepository
-import com.example.firebase_learn.domain.usecase.userUseCase.GetFireStoreDataUserUseCase
-import com.example.firebase_learn.domain.usecase.userUseCase.LogoutUserUseCase
-import com.example.firebase_learn.domain.usecase.userUseCase.RegisterUserUseCase
 import com.example.firebase_learn.domain.usecase.userUseCase.SignInUserUseCase
+import com.example.firebase_learn.utils.UiResource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,15 +12,13 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import javax.inject.Singleton
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-//    private var userRepository: UserRepository,
     private var signInUserUseCase: SignInUserUseCase,
-//    private var sharedPrefApp: SharedPrefApp,
 
     ) : ViewModel() {
 
@@ -44,9 +35,14 @@ class LoginViewModel @Inject constructor(
             is LoginViewIntent.UpdateEmail -> {
                 updateEmail(intent.email)
             }
-
+            is LoginViewIntent.UpdateEmailError->{
+                updateEmailError(intent.hasError)
+            }
             is LoginViewIntent.UpdatePassword -> {
                 updatePassword(intent.password)
+            }
+            is LoginViewIntent.UpdatePasswordError->{
+                updatePasswordError(intent.hasError)
             }
 
             is LoginViewIntent.Login -> {
@@ -61,20 +57,17 @@ class LoginViewModel @Inject constructor(
 
     }
 
-    private fun updateEmail(inputEmail: String) {
-        _uiState.value = _uiState.value.copy(email = inputEmail)
-    }
+    private fun updateEmail(inputEmail: String) { _uiState.update{it.copy(email = inputEmail)} }
+    private fun updateEmailError(hasError: Boolean){ _uiState.update { it.copy(emailError = hasError) } }
+
+    private fun updatePassword(inputPassword: String) { _uiState.update{it.copy(password = inputPassword)} }
+    private fun updatePasswordError(hasError: Boolean){_uiState.update { it.copy(passwordError = hasError) }}
 
     private fun handleRegisterNavigation() {
         viewModelScope.launch {
             _effectFlow.emit(LoginUiEffect.NavigateToRegister)
         }
     }
-
-    private fun updatePassword(inputPassword: String) {
-        _uiState.value = _uiState.value.copy(password = inputPassword)
-    }
-
 
     private fun login(email: String, password: String) {//login==signIN
         viewModelScope.launch {
@@ -97,7 +90,9 @@ class LoginViewModel @Inject constructor(
                             isLoading = false,
                             errorMessage = uiResourse.exception.message ?: "unKnownError"
                         )
-                        _effectFlow.emit(LoginUiEffect.ShowSnackBar("failNavigate"))
+                        if(uiState.value.errorMessage!="") {
+                            _effectFlow.emit(LoginUiEffect.ShowSnackBar(_uiState.value.errorMessage))
+                        }
 
                     }
                 }

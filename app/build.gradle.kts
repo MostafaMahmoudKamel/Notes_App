@@ -103,4 +103,8 @@ dependencies {
     implementation(libs.firebase.analytics.ktx)  // Analytics
     implementation(libs.firebase.messaging.ktx)  // Cloud Messaging
     implementation(libs.firebase.storage.ktx)    // Cloud Storage
+
+    //compose icons
+    implementation ("androidx.compose.material:material-icons-extended:1.7.5")
+
 }

@@ -1,6 +1,6 @@
 package com.example.firebase_learn.domain.usecase.userUseCase
 
-import com.example.firebase_learn.data.model.UiResource
+import com.example.firebase_learn.utils.UiResource
 import com.example.firebase_learn.data.model.User
 import com.example.firebase_learn.domain.repository.UserRepository
 import kotlinx.coroutines.flow.Flow
