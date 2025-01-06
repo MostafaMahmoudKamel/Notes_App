@@ -115,7 +115,7 @@ fun HomeScreen(
                     }
                     // setting in toolBar such as Deleting all Notes
                     DropdownMenu(
-                        expanded = uiState.value.expandSetting,
+                        expanded = uiState.value.expandSetting,//false
                         onDismissRequest = {viewModel.handeIntent(HomeViewIntent.SetExpand(expand = false)) },
                         modifier = Modifier.background(Color.White)
                     ) {

@@ -3,12 +3,13 @@ package com.example.firebase_learn.presentition.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.firebase_learn.domain.usecase.dataStoreUsecase.UpdateBooleanUseCase
 import com.example.firebase_learn.domain.usecase.noteUseCase.ClearNotesUseCase
-import com.example.firebase_learn.utils.UiResource
 import com.example.firebase_learn.domain.usecase.noteUseCase.GetAllNotesUseCase
 import com.example.firebase_learn.domain.usecase.noteUseCase.SearchNoteUseCase
 import com.example.firebase_learn.domain.usecase.userUseCase.GetFireStoreDataUserUseCase
 import com.example.firebase_learn.domain.usecase.userUseCase.LogoutUserUseCase
+import com.example.firebase_learn.utils.UiResource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,6 +28,7 @@ class HomeViewModel @Inject constructor(
     private var getAllNotesUseCase: GetAllNotesUseCase,
     private var searchNoteUseCase: SearchNoteUseCase,
     private var clearNotesUseCase: ClearNotesUseCase,
+    private var updateBooleanUseCase: UpdateBooleanUseCase
 ) : ViewModel() {
 
     private var _uiState: MutableStateFlow<HomeUiState> = MutableStateFlow(HomeUiState())
@@ -117,7 +119,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             logoutUserUseCase().collect { uiResoure ->
                 when (uiResoure) {
-                    is UiResource.Loading -> {
+                    is UiResource.Loading -> { //changing loading ui so i should convert to Dispatchers.main
                         _uiState.value = _uiState.value.copy(isLoading = true)
                     }
 
@@ -126,6 +128,10 @@ class HomeViewModel @Inject constructor(
                         _uiState.value = _uiState.value.copy(isLoading = false)
                         _effectFlow.emit(HomeViewEffect.NavigateToLogin)
 
+                        //clear shared preferences
+//                            clearPreferenceUseCase()
+                        updateBooleanUseCase(value = false)//update to defaultValues     //change it
+
                     }
 
                     is UiResource.Failure -> {
@@ -133,6 +139,7 @@ class HomeViewModel @Inject constructor(
                         _uiState.value = _uiState.value.copy(isLoading = false)
                     }
                 }
+
 
             }
         }

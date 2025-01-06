@@ -106,9 +106,9 @@ fun RegisterScreen(viewModel: RegisterViewModel = hiltViewModel(), onNavigateToL
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp)
-                        .focusRequester(focusRequester)
+                        .focusRequester(focusRequester) //focusRequest
                         .onFocusChanged {
-                            if (it.isFocused) {
+                            if (it.isFocused) { //لو وقفت عليها     بامؤشر هينفذ
                                 viewModel.handeIntent(
                                     RegisterViewIntent.UpdateNameError(
                                         true

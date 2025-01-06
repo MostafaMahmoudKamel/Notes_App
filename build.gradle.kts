@@ -6,7 +6,7 @@ plugins {
     id("com.google.gms.google-services") version "4.4.2" apply false
 
     //hilt & ksp library
-    id("org.jetbrains.kotlin.jvm") version "1.9.23"// هامه جدا jvm
+    id("org.jetbrains.kotlin.jvm") version "2.0.21"// هامه جدا jvm
     id("com.google.devtools.ksp") version "2.0.21-1.0.25" //use ksp instead kapt
     id("com.google.dagger.hilt.android") version "2.52" apply false
 

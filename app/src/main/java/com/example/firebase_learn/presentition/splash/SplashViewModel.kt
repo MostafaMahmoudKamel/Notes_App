@@ -2,8 +2,7 @@ package com.example.firebase_learn.presentition.splash
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.firebase_learn.data.sharedPref.SharedPrefApp
-import com.example.firebase_learn.utils.SharedPrefKeys
+import com.example.firebase_learn.domain.usecase.dataStoreUsecase.GetBooleanUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,7 +13,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SplashViewModel @Inject constructor(
-    private var sharedPrefApp: SharedPrefApp
+    private var getBooleanUseCase: GetBooleanUseCase
 ) : ViewModel() {
 
     private var _uiState = MutableStateFlow(SplashUiState())
@@ -31,7 +30,8 @@ class SplashViewModel @Inject constructor(
 
     private fun checkUserStatus() {
         viewModelScope.launch {
-            val isLogin = sharedPrefApp.getBoolean(SharedPrefKeys.isLogin, false)
+//            val isLogin=getBooleanPreferenceUseCase(SharedPrefKeys.isLogin,false)
+            val isLogin=getBooleanUseCase()
 
             if (isLogin) {
                 _effectFlow.emit(SplashViewEffect.NavigateToHome)

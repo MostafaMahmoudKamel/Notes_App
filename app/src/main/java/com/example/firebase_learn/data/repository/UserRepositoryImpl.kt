@@ -1,10 +1,8 @@
 package com.example.firebase_learn.data.repository
 
 import com.example.firebase_learn.data.model.User
-import com.example.firebase_learn.data.sharedPref.SharedPrefApp
 import com.example.firebase_learn.domain.repository.UserRepository
 import com.example.firebase_learn.utils.Collections
-import com.example.firebase_learn.utils.SharedPrefKeys
 import com.example.firebase_learn.utils.UiResource
 import com.example.firebase_learn.utils.wrapWithFlow
 import com.google.firebase.auth.FirebaseAuth
@@ -16,21 +14,18 @@ import javax.inject.Inject
 class UserRepositoryImpl @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
     private val firestore: FirebaseFirestore,
-    private val sharedPrefApp: SharedPrefApp
+//    private val sharedPrefApp: SharedPrefApp //
+//    private val saveBooleanPreferenceUseCase: SaveBooleanPreferenceUseCase,
+//    private val getBooleanPreference: GetBooleanPreference,
+//    private val clearPreferenceUseCase: ClearPreferenceUseCase
 ) : UserRepository {
     override suspend fun signIn(email: String, password: String): Flow<UiResource<Boolean>> =
         wrapWithFlow {
-//            if (email.isBlank() || password.isBlank()) {
-//                throw Exception("Email or password cannot be blank")
-//            }
-//
-//            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-//                throw Exception("Invalid email format")
-//            }
+
             firebaseAuth.signInWithEmailAndPassword(email, password).await()
 
             //shared preferences
-            sharedPrefApp.saveBoolean(SharedPrefKeys.isLogin, true)
+//            saveBooleanPreferenceUseCase(SharedPrefKeys.isLogin, true)
             true
         }
 
@@ -57,7 +52,9 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun logout(): Flow<UiResource<Boolean>> = wrapWithFlow {
         firebaseAuth.signOut()//logout
-        sharedPrefApp.clearSharedPref() //clear sharedPerf
+//        sharedPrefApp.clearSharedPref() //clear sharedPerf
+//        clearPreferenceUseCase()
+
         true
 
     }

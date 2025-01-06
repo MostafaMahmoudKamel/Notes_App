@@ -18,7 +18,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun CustomToolBar(text:String,imageVectorStart:ImageVector?=null,imageVectorEnd: ImageVector?=null,onIconClicked: () -> Unit,onBackClicked:(()->Unit)?=null   ) {
+fun CustomToolBar(
+    text: String,
+    imageVectorStart: ImageVector? = null,
+    imageVectorEnd: ImageVector? = null,
+    onIconClicked: () -> Unit,
+    onBackClicked: (() -> Unit)? = null
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -27,9 +33,9 @@ fun CustomToolBar(text:String,imageVectorStart:ImageVector?=null,imageVectorEnd:
         verticalAlignment = Alignment.CenterVertically
     ) {
         imageVectorStart?.let {
-                IconButton(onClick = onBackClicked ?:{}) {
-                    Icon(imageVector = imageVectorStart, contentDescription = "Back")
-                }
+            IconButton(onClick = onBackClicked ?: {}) {
+                Icon(imageVector = imageVectorStart, contentDescription = "Back")
+            }
 
         }
 
@@ -44,7 +50,7 @@ fun CustomToolBar(text:String,imageVectorStart:ImageVector?=null,imageVectorEnd:
         )
         imageVectorEnd?.let {
             IconButton(onClick = onIconClicked) {
-                Icon(imageVector=imageVectorEnd, contentDescription = "Delete")
+                Icon(imageVector = imageVectorEnd, contentDescription = "Delete")
             }
         }
 

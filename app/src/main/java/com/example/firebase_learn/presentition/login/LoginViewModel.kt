@@ -3,7 +3,10 @@ package com.example.firebase_learn.presentition.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.firebase_learn.domain.usecase.dataStoreUsecase.UpdateBooleanUseCase
+//import com.example.firebase_learn.domain.usecase.preferenceUseCase.SaveBooleanPreferenceUseCase
 import com.example.firebase_learn.domain.usecase.userUseCase.SignInUserUseCase
+//import com.example.firebase_learn.utils.SharedPrefKeys
 import com.example.firebase_learn.utils.UiResource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -19,6 +22,8 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private var signInUserUseCase: SignInUserUseCase,
+//    private var saveBooleanPreferenceUseCase: SaveBooleanPreferenceUseCase
+    private var updateBooleanUseCase: UpdateBooleanUseCase
 
     ) : ViewModel() {
 
@@ -81,8 +86,12 @@ class LoginViewModel @Inject constructor(
                     is UiResource.Success -> {
                         _effectFlow.emit(LoginUiEffect.ShowSnackBar("successNavigate"))
                         _uiState.value = _uiState.value.copy(isLoading = false)
-                        //Shared preferences   -->put handle of it in repository
                         _effectFlow.emit(LoginUiEffect.NavigateToHome)//navigate to home //navigate effect
+
+                        // save isLogin sharedPreferences
+//                        saveBooleanPreferenceUseCase(SharedPrefKeys.isLogin,true)
+                        updateBooleanUseCase(value = true)
+
                     }
 
                     is UiResource.Failure -> {

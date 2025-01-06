@@ -33,6 +33,7 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
+
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -90,14 +91,14 @@ dependencies {
 
     //navigation
     // Jetpack Compose Navigation dependency
-    implementation (libs.androidx.navigation.compose)
+    implementation(libs.androidx.navigation.compose)
     //serizliztion
     implementation(libs.kotlinx.serialization.json)
 
-    implementation(platform(libs.firebase.bom))
 
-    implementation(libs.firebase.analytics)
     // Firebase Libraries
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
     implementation(libs.firebase.auth.ktx)       // Authentication
     implementation(libs.firebase.firestore.ktx)  // Firestore Database
     implementation(libs.firebase.analytics.ktx)  // Analytics
@@ -105,6 +106,10 @@ dependencies {
     implementation(libs.firebase.storage.ktx)    // Cloud Storage
 
     //compose icons
-    implementation ("androidx.compose.material:material-icons-extended:1.7.5")
+    implementation(libs.androidx.material.icons.extended)
+
+    implementation("androidx.datastore:datastore:1.1.1")
+    //json to convert object i need to store in data store
+    implementation("com.google.code.gson:gson:2.10.1") // Use the latest version
 
 }
